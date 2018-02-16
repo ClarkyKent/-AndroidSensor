@@ -15,31 +15,66 @@
         android:layout_gravity="center"
         android:layout_height="40dp">
 
-        <RadioButton
-            android:id="@+id/fast"
+        <RadioGroup
+            android:id="@+id/SamplingOption"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Fast"
-            />
-        <RadioButton
-            android:id="@+id/normal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Normal"
-            />
-        <RadioButton
-            android:id="@+id/slow"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Slow"
-            />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:checkedButton="@id/fast"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/fast"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Fast"
+                />
+            <RadioButton
+                android:id="@+id/normal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Normal"
+                />
+            <RadioButton
+                android:id="@+id/slow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Slow"
+                />
+        </RadioGroup>
 
     </LinearLayout>
+
+
+    <Button android:layout_width="wrap_content"
+        android:layout_margin="15dp"
+        android:id="@+id/Break"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessageBrake"
+        android:text="Break"/>
+
+    <Button android:layout_width="wrap_content"
+        android:layout_margin="15dp"
+        android:id="@+id/Acceleration"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessageAcc"
+        android:text="Acceleration"/>
+
+    <Button android:layout_width="wrap_content"
+        android:id="@+id/Aggressive_steering"
+        android:layout_margin="15dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessageSteer"
+        android:text="Aggressive steering"/>
+
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="40dp"
         android:layout_height="40dp">
 
         <Button android:layout_width="fill_parent"
@@ -55,18 +90,7 @@
 
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/Accelrometerchart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/Gyrochart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/Magnetochart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 
 </LinearLayout>
 

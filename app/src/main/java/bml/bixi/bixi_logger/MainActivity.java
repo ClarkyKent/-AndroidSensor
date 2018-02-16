@@ -9,8 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import com.github.mikephil.charting.charts.LineChart;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,10 +18,11 @@ import java.io.IOException;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    SensorManager mSensorManager ;
+    SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
     boolean isRunning;
     final String TAG = "SensorLog";
     FileWriter writer;
+    int samplingSpeed = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +31,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         isRunning = false;
 
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-
-        LineChart Accchart = (LineChart) findViewById(R.id.Accelrometerchart);
-        LineChart Gychart = (LineChart) findViewById(R.id.Gyrochart);
-        LineChart Mchart = (LineChart) findViewById(R.id.Magnetochart);
 
 
         final Button buttonStart = findViewById(R.id.button_start);
         final Button buttonStop = findViewById(R.id.button_stop);
+        final Button buttonbreak = findViewById(R.id.Break);
+        final Button buttonAcc = findViewById(R.id.Acceleration);
+        final Button buttonSteer = findViewById(R.id.Aggressive_steering);
+        final RadioGroup radioGroup = findViewById(R.id.SamplingOption);
         buttonStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 buttonStart.setEnabled(false);
                 buttonStop.setEnabled(true);
+
+                buttonbreak.setEnabled(false);
+                buttonAcc.setEnabled(false);
+                buttonSteer.setEnabled(false);
+
+                radioGroup.setEnabled(false);
 
                 Sensor mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
                 Sensor mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -52,15 +58,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Sensor mRotVector = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
                 Sensor mMotion = mSensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
 
-
-                mSensorManager.registerListener(MainActivity.this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mMagnometer, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mGravity, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mLinerAccel, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mRotVector, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mMotion, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mMotion, SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(MainActivity.this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+                mSensorManager.flush(MainActivity.this);
+                mSensorManager.registerListener(MainActivity.this, mGyroscope, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mMagnometer, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mGravity, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mLinerAccel, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mRotVector, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mMotion, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mMotion, samplingSpeed);
+                mSensorManager.registerListener(MainActivity.this, mAccelerometer, samplingSpeed);
 
                 Log.d(TAG, "Writing to " + getStorageDir());
                 try {
@@ -72,10 +78,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+
         buttonStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 buttonStart.setEnabled(true);
                 buttonStop.setEnabled(false);
+                radioGroup.setEnabled(true);
+
+                buttonbreak.setEnabled(true);
+                buttonAcc.setEnabled(true);
+                buttonSteer.setEnabled(true);
 
                 isRunning = false;
                 mSensorManager.flush(MainActivity.this);
@@ -105,6 +117,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //mSensorManager.unregisterListener(this);
     }
 
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.fast:
+                if (checked)
+                    samplingSpeed = SensorManager.SENSOR_DELAY_FASTEST;
+                    break;
+            case R.id.slow:
+                if (checked)
+                    samplingSpeed = SensorManager.SENSOR_DELAY_UI;
+                    break;
+            case R.id.normal:
+                if (checked)
+                    samplingSpeed = SensorManager.SENSOR_DELAY_NORMAL;
+                    break;
+        }
+    }
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -144,6 +176,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
 
+    }
+
+    /** Called when the user touches the button */
+    public void sendMessageBrake(View view) throws IOException {
+        writer.write(String.format("Break"));
+    }
+
+    /** Called when the user touches the button */
+    public void sendMessageAcc(View view) throws IOException {
+        writer.write(String.format("Acceleration"));
+    }
+
+    /** Called when the user touches the button */
+    public void sendMessageSteer(View view) throws IOException {
+        writer.write(String.format("Aggressive Steering"));
     }
 
     @Override
