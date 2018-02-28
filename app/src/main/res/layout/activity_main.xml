@@ -51,6 +51,7 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:onClick="sendMessageBrake"
+        android:enabled="false"
         android:text="Break"/>
 
     <Button android:layout_width="wrap_content"
@@ -59,6 +60,7 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:onClick="sendMessageAcc"
+        android:enabled="false"
         android:text="Acceleration"/>
 
     <Button android:layout_width="wrap_content"
@@ -67,6 +69,7 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:onClick="sendMessageSteer"
+        android:enabled="false"
         android:text="Aggressive steering"/>
 
 

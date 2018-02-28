@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+    SensorManager mSensorManager ;
     boolean isRunning;
     final String TAG = "SensorLog";
     FileWriter writer;
@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         isRunning = false;
-
-
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         final Button buttonStart = findViewById(R.id.button_start);
         final Button buttonStop = findViewById(R.id.button_stop);
@@ -39,16 +38,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         final Button buttonAcc = findViewById(R.id.Acceleration);
         final Button buttonSteer = findViewById(R.id.Aggressive_steering);
         final RadioGroup radioGroup = findViewById(R.id.SamplingOption);
+        final RadioButton slow = findViewById(R.id.slow);
+        final RadioButton fast = findViewById(R.id.fast);
+        final RadioButton normal = findViewById(R.id.normal);
         buttonStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 buttonStart.setEnabled(false);
                 buttonStop.setEnabled(true);
 
-                buttonbreak.setEnabled(false);
-                buttonAcc.setEnabled(false);
-                buttonSteer.setEnabled(false);
+                buttonbreak.setEnabled(true);
+                buttonAcc.setEnabled(true);
+                buttonSteer.setEnabled(true);
 
                 radioGroup.setEnabled(false);
+                slow.setEnabled(false);
+                fast.setEnabled(false);
+                normal.setEnabled(false);
 
                 Sensor mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
                 Sensor mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -85,9 +90,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 buttonStop.setEnabled(false);
                 radioGroup.setEnabled(true);
 
-                buttonbreak.setEnabled(true);
-                buttonAcc.setEnabled(true);
-                buttonSteer.setEnabled(true);
+                buttonbreak.setEnabled(false);
+                buttonAcc.setEnabled(false);
+                buttonSteer.setEnabled(false);
+
+                slow.setEnabled(true);
+                fast.setEnabled(true);
+                normal.setEnabled(true);
 
                 isRunning = false;
                 mSensorManager.flush(MainActivity.this);
@@ -180,17 +189,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     /** Called when the user touches the button */
     public void sendMessageBrake(View view) throws IOException {
-        writer.write(String.format("Break"));
+        writer.write(String.format("\r\n#################Break##################\r\n"));
     }
 
     /** Called when the user touches the button */
     public void sendMessageAcc(View view) throws IOException {
-        writer.write(String.format("Acceleration"));
+        writer.write(String.format("\n\r#################Acceleration##################\n"));
     }
 
     /** Called when the user touches the button */
     public void sendMessageSteer(View view) throws IOException {
-        writer.write(String.format("Aggressive Steering"));
+        writer.write(String.format("\n\r#################Aggressive Steering##################\n"));
     }
 
     @Override
